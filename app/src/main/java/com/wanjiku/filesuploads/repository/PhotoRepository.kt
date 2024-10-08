@@ -9,6 +9,11 @@ import com.wanjiku.filesuploads.api.ApiInterface
 import com.wanjiku.filesuploads.model.PhotoResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.Request
+import okhttp3.RequestBody
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
@@ -18,21 +23,26 @@ class PhotoRepository {
 
     suspend fun uploadPhoto(uri: Uri,caption:String):Response<PhotoResponse>{
         return withContext(Dispatchers.IO){
+            val imageFile=getFileFromUri(uri)
+            val imageRequestBody=RequestBody.create("image/*".toMediaTypeOrNull(),imageFile)
+            val imageRequest=MultipartBody.Part.createFormData("image",imageFile.name,imageRequestBody)
+            val captionRequest=MultipartBody.Part.createFormData("caption",caption)
+            apiInterface.uploadPhotos(captionRequest,imageRequest)
 
         }
     }
     fun getFileFromUri(uri: Uri):File{
         val context=MyApp.appContext
         val inputStream=context.contentResolver.openInputStream(uri)
-        val file=File(context.filesDir,"")
+        val file=File(context.filesDir, getFileNameFromUri(context.contentResolver, uri))
         val outputStream=FileOutputStream(file)
         inputStream!!.copyTo(outputStream)
         inputStream.close()
         outputStream.close()
-        return File(file.path)
+        return file
     }
 
-    fun getFileNameFomUri(resolver: ContentResolver,uri: Uri):String{
+    fun getFileNameFromUri(resolver: ContentResolver,uri: Uri):String{
         val cursor=resolver.query(uri,null,null,null,null)!!
         val  nameIndex=cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
         cursor.moveToFirst()
