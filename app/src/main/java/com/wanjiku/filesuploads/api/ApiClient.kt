@@ -1,5 +1,6 @@
 package com.wanjiku.filesuploads.api
 
+import com.wanjiku.filesuploads.utils.Constance
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -12,7 +13,8 @@ object ApiClient {
         .readTimeout(30,TimeUnit.SECONDS)
         .build()
      val retrofit=Retrofit.Builder()
-         .baseUrl("")
+         .baseUrl(Constance.BASEURL)
+//         .baseUrl("https://dummyjson.com")
          .addConverterFactory(GsonConverterFactory.create())
          .client(okHttpClient)
          .build()
