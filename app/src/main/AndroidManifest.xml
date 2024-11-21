@@ -23,6 +23,11 @@
         <activity
             android:name=".ui.LogInActivity"
             android:exported="true">
+
+        </activity>
+        <activity
+            android:name=".ui.HomeActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,11 +35,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.HomeActivity"
-            android:exported="true"></activity>
-        <activity
             android:name=".ui.MainActivity"
-            android:exported="true" />
+            android:exported="true" >
+
+        </activity>
 
         <provider
             android:authorities="${applicationId}.provider"
